@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>userpage</title>
+    <script src="{{ url_for('static', filename='script.js', v='6') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='7') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+                <div class="left-section">
+                    <div class="container" onclick="myFunction(this)">
+                        <div class="bar1"></div>
+                        <div class="bar2"></div>
+                        <div class="bar3"></div>
+                    </div>
+                    <span class="header-text">your profil</span>
+                </div>
+        </div>
+    </header>
+
+    <div id="accordionMenu" class="accordion">
+        <a href="/">Home</a>
+        <a href="/irgendwas">irgendwas</a>
+        <a href="/About">About</a>
+    </div>
+
+    <div class="user-profile">
+        <div class="user-icon">
+            <img src="https://media1.tenor.com/m/JDo71KWH87EAAAAC/happy-happy-happy-cat.gif" alt="User Photo">
+        </div>
+        <div class="user-info">
+            <p class="username">kaeru</p>
+            <p class="status">hello</p>
+        </div>
+    </div>
+    
+    <div class="activity">
+        <p class="line"></p>
+        <div class="button-row">
+            <button type="button" onclick="location.href='/chat'">Chat</button>
+            <button type="button" onclick="location.href='/projects'">Projects</button>
+        </div>
+    </div>
+    
+</body>
+</html>
