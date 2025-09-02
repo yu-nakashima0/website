@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yutube</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='yutube.css') }}">
+</head>
+<body>
+  <h1 class="yt-header">Yutube</h1>
+  <form action="{{ url_for('yutube') }}" method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="file" name="video" accept="video/*" required>
+    <button type="submit">Upload</button>
+  </form>
+  <div class="video-list">
+    {% for v in videos %}
+      <div class="video-item">
+        <video controls>
+          <source src="{{ v.data_url }}" type="video/mp4">
+        </video>
+        <p>{{ v.filename }}</p>
+      </div>
+      <div class="comment-section">
+        <h3>Comments</h3>
+        <form action="{{ url_for('add_comment', video_id=v.id) }}" method="post">
+          <input type="text" name="comment" placeholder="Add a comment..." required>
+          <button type="submit">Post</button>
+        </form>
+        <div class="comments">
+        {% for comment in comments %}
+          {% if comment.video_id == v.id %}
+
+            <p>{{ comment.comment_text }}</p>
+          {% endif %}
+        {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

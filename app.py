@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect
-from models import db, User
+from models import db, User, Video, Comment
 from werkzeug.security import check_password_hash, generate_password_hash, check_password_hash
+import base64
 
 
 
@@ -84,7 +85,34 @@ def login():
             return render_template("login.html", error=error)
     return render_template("login.html")
 
+@app.route("/yutube", methods=["GET", "POST"])
+def yutube():
+    if request.method == "POST":
+        file = request.files.get("video")
+        if file:
+            vid = Video(filename=file.filename, data=file.read())
+            db.session.add(vid)
+            db.session.commit()
+        return redirect("/yutube")
+    videos = Video.query.all()
+    vids = [{
+        "id": v.id,
+        "filename": v.filename,
+        "data_url": "data:video/mp4;base64," + base64.b64encode(v.data).decode()
+    } for v in videos]
+    comms = Comment.query.all()
+    print(comms)
+    return render_template("yutube.html", videos=vids, comments=comms)
 
+@app.route("/add_comment/<int:video_id>", methods=["POST"])
+def add_comment(video_id):
+    comment_text = request.form.get("comment")
+    print(f"Received comment for video_id {video_id}: {comment_text}")
+    if video_id and comment_text:
+        comment = Comment(video_id=video_id, comment_text=comment_text)
+        db.session.add(comment)
+        db.session.commit()
+    return redirect("/yutube")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
