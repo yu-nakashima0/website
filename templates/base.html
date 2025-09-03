@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='6') }}">
+    <script src="{{ url_for('static', filename='script.js', v='6') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="left-section">
+                <div class="container" onclick="myFunction(this)">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div>
+                <span class="header-text">HOME</span>
+            </div>
+            <div class="right-section">
+                <a href="/login">
+                    <i class="fa fa-user"></i>
+                </a>
+                <i class="fa fa-question-circle"></i>
+            </div>
+        </div>
+    </header>
+
+    <div id="accordionMenu" class="accordion">
+        <a href="/">Home</a>
+        <a href="/irgendwas">irgendwas</a>
+        <a href="/About">About</a>
+    </div>
+    <h1>
+        {% block header %}{% endblock %}
+    </h1>
+
+    {% block content %}{% endblock %}
+
+    
+
+</body>
+</html>
