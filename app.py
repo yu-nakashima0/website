@@ -39,11 +39,11 @@ def s_u():
 
 @app.route("/userpage")
 def userpage():
-    user_id = session.get("user_id")
-    if not user_id:
+    username = session.get("username")
+    if not username:
         return redirect("/login")
 
-    user = db.session.get(User, user_id) 
+    user = db.session.query(User).filter_by(username=username).first()
     if user:
         return render_template("userpage.html", username=user.username)
     else:
@@ -87,9 +87,11 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
+            print("Hello")
             session["username"] = username  
-            return redirect(url_for("userpage"))  
+            return redirect("/userpage")  
         else:
+            print("Invalid credentials")
             return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
 
