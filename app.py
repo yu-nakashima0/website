@@ -1,11 +1,12 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, session, redirect, url_for
 from models import db, User, Video, Comment
 from werkzeug.security import check_password_hash, generate_password_hash, check_password_hash
 import base64
-
+import os
 
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
@@ -38,7 +39,15 @@ def s_u():
 
 @app.route("/userpage")
 def userpage():
-    return render_template("userpage.html")
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect("/login")
+
+    user = db.session.get(User, user_id) 
+    if user:
+        return render_template("userpage.html", username=user.username)
+    else:
+        return redirect("/login")
 
 @app.route('/chat')
 def chat():
@@ -54,19 +63,19 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
 
-        # すでにユーザー名が存在するか確認
+        # check, ob der username schon benutzt oder nicht.
         if User.query.filter_by(username=username).first():
             return render_template("signup.html", error="このユーザー名は既に使われています")
 
-        # パスワードをハッシュ化して保存
+        # hash generieren for password
         hashed_password = generate_password_hash(password)
 
-        # 新しいユーザーを追加
+        # add new user
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect("/login")  # サインアップ後ログインページへ
+        return redirect("/login")  # go to login page
 
     return render_template("signup.html")
 
@@ -78,11 +87,10 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
-            # Go to userpage.html instead of redirecting to "/"
-            return render_template("userpage.html", username=username)
+            session["username"] = username  
+            return redirect(url_for("userpage"))  
         else:
-            error = "username or password are wrong"
-            return render_template("login.html", error=error)
+            return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")
 
 @app.route("/yutube", methods=["GET", "POST"])
