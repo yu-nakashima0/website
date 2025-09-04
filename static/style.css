@@ -1,0 +1,82 @@
+header, header a, header i, .accordion a{
+    color: rgb(153, 199, 239)
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Links & Rechts ausrichten */
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.right-section a, .right-section i {
+    color: rgb(153, 199, 239);
+    font-size: 18px;
+}
+
+.container {
+    display: inline-block;
+    cursor: pointer;
+}
+
+
+.bar1, .bar2, .bar3 {
+  width: 20px;
+  height: 2px;
+  background-color: rgb(153, 199, 239);
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+
+.accordion {
+    position: absolute; /* Bleibt am Bildschirm */
+    top: 60px;
+    width: 150px; /* Breite des Menüs */
+    height: 100vh; /* Volle Fensterhöhe */
+    background-color: rgb(244, 250, 254);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    z-index: 100;
+    gap: 10px;
+    visibility: hidden;  /* unsichtbar */
+    opacity: 0;          /* unsichtbar */
+    transition: left 0.5s ease; /* Smooth Slide-In von rechts */
+}
+
+.accordion a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 1.7em;
+    padding: 8 10px;
+    font-size: 14px;
+    color: rgb(153, 199, 239);
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.accordion a:hover, header a:hover {
+    background-color: rgb(222, 230, 236);
+}
+
+.accordion.show {
+    left: 0;  /* Zeigt das Menü an */
+    visibility: visible; /* sichtbar */
+    opacity: 1;
+}
