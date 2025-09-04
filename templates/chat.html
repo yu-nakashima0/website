@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}User Page{% endblock %}
 
-{% block header %}chat{% endblock %}
+{% block header %}{% endblock %}
 
 {% block content %}
+    <div class="chat-container">
+        <h2>chat</h2>
 
- {% endblock %}
+            
+
+            <form action="/chat" method="post">
+                <label for="sender"></label>
+                <input type="text" id="chat_text" name="text" required>
+
+                <button type="submit">send</button>
+                
+            </form>
+
+            <div class="chat-text">
+                {% for text in texts %}
+                    <p>{{ text.text }} </p>
+                {% endfor %}
+            </div>
+    </div>
+
+{% endblock %}

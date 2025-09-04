@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, session, redirect, url_for
-from models import db, User, Video, Comment
+from models import db, User, Video, Comment, Chat
 from werkzeug.security import check_password_hash, generate_password_hash, check_password_hash
 import base64
 import os
@@ -49,10 +49,6 @@ def userpage():
     else:
         return redirect("/login")
 
-@app.route('/chat')
-def chat():
-    return render_template('chat.html')
-
 @app.route('/projects')
 def projects():
     return render_template('projects.html')
@@ -88,7 +84,8 @@ def login():
 
         if user and check_password_hash(user.password, password):
             print("Hello")
-            session["username"] = username  
+            session["username"] = username
+            session["user_id"] = user.id   
             return redirect("/userpage")  
         else:
             print("Invalid credentials")
@@ -123,6 +120,20 @@ def add_comment(video_id):
         db.session.add(comment)
         db.session.commit()
     return redirect("/yutube")
+
+@app.route('/chat', methods=["GET", "POST"])
+def add_chat_text():
+    user_id = session.get("user_id") 
+    if request.method == "POST":
+        text = request.form["text"]
+        
+        new_text = Chat(text=text, user_id=user_id) 
+        db.session.add(new_text)
+        db.session.commit()
+        return redirect("/chat")
+    # GET-Methode: Texte abrufen
+    texts = Chat.query.filter_by(user_id=user_id).order_by(Chat.id.asc()).all()
+    return render_template("chat.html", texts=texts)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
