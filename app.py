@@ -37,6 +37,24 @@ def l_i():
 def s_u():
     return render_template("signup.html")
 
+@app.route('/friends', methods=["GET", "POST"])
+def add_friends():
+    user_id = session.get("user_id") 
+    user = User.query.get(user_id) 
+
+    if request.method == "POST":
+        searched_username = request.form["friends"]
+        searched_user = User.query.filter_by(username=searched_username).first()
+        if searched_user and searched_user != user:
+            if searched_user not in user.friends:
+                user.friends.append(searched_user)
+                db.session.commit()
+        return redirect("/friends")
+
+    # GET-Methode: Freunde abrufen
+    friends = user.friends  
+    return render_template("friends.html", user=user, friends=friends)
+
 @app.route("/userpage")
 def userpage():
     username = session.get("username")

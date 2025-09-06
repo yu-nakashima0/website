@@ -4,10 +4,24 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+friends = db.Table('friends',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
+
+    # friends relationship
+    friends = db.relationship(
+        'User',
+        secondary=friends,
+        primaryjoin=id==friends.c.user_id,
+        secondaryjoin=id==friends.c.friend_id,
+        backref='friend_of'
+    )
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -23,4 +37,4 @@ class Chat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(500), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
+
