@@ -6,22 +6,21 @@
 {% block content %}
     <div class="chat-container">
         <h2>chat</h2>
-
-            
-
             <form action="/chat" method="post">
-                <label for="sender"></label>
-                <input type="text" id="chat_text" name="text" required>
-
-                <button type="submit">send</button>
-                
+                <select name="receiver_id" required>
+                    {% for friend in friends %}
+                        <option value="{{ friend.id }}">{{ friend.username }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="text" placeholder="Type your message" required>
+                <button type="submit">Send</button>
             </form>
 
-            <div class="chat-text">
-                {% for text in texts %}
-                    <p>{{ text.text }} </p>
-                {% endfor %}
-            </div>
+        <div class="chat-text">
+            {% for msg in texts %}
+                <p><strong>{{ msg.sender.username }}</strong> → <strong>{{ msg.receiver.username }}</strong>: {{ msg.text }}</p>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

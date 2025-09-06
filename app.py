@@ -142,17 +142,30 @@ def add_comment(video_id):
 
 @app.route('/chat', methods=["GET", "POST"])
 def add_chat_text():
-    user_id = session.get("user_id") 
+    sender_id = session.get("user_id")
+    user = db.session.get(User, sender_id)
+
+    # Liste der Freunde für die Empfängerauswahl
+    friends = user.friends
+
     if request.method == "POST":
         text = request.form["text"]
-        
-        new_text = Chat(text=text, user_id=user_id) 
-        db.session.add(new_text)
-        db.session.commit()
+        receiver_id = int(request.form["receiver_id"])
+        receiver = User.query.get(receiver_id)
+
+        # Nur an Freunde senden
+        if receiver and receiver in friends:
+            new_text = Chat(text=text, sender=user, receiver=receiver)
+            db.session.add(new_text)
+            db.session.commit()
         return redirect("/chat")
-    # GET-Methode: Texte abrufen
-    texts = Chat.query.filter_by(user_id=user_id).order_by(Chat.id.asc()).all()
-    return render_template("chat.html", texts=texts)
+
+    # Alle Nachrichten des Users abrufen (gesendet oder empfangen)
+    texts = Chat.query.filter(
+        (Chat.sender_id == sender_id) | (Chat.receiver_id == sender_id)
+    ).order_by(Chat.id.asc()).all()
+
+    return render_template("chat.html", texts=texts, friends=friends)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
