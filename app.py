@@ -48,6 +48,7 @@ def add_friends():
         if searched_user and searched_user != user:
             if searched_user not in user.friends:
                 user.friends.append(searched_user)
+                searched_user.friends.append(user)
                 db.session.commit()
         return redirect("/friends")
 
