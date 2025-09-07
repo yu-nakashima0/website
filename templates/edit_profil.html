@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Edit profil{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+
+<div class="name">
+    <form action="/edit_profil" method="post">
+        <input type="text" name="username" value="{{ user.username }}" required>
+        <button type="submit" name="action" value="change_username">Update Username</button>
+    </form>
+</div>
+
+<div class="status">
+    <form action="/edit_profil" method="post">
+        <input type="text" name="status" value="{{ user.status or '' }}" required>
+        <button type="submit" name="action" value="change_status">Update Status</button>
+    </form>
+</div>
+
+<div class="password">
+    <form action="/edit_profil" method="post">
+        <input type="password" name="password" required>
+        <button type="submit" name="action" value="change_password">Update Password</button>
+    </form>
+</div>
+{% endblock %}

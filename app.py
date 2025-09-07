@@ -33,9 +33,39 @@ def about():
 def l_i():
     return render_template("login.html")
 
-@app.route('/signup')
-def s_u():
-    return render_template("signup.html")
+@app.route('/edit_profil', methods=["GET", "POST"])
+def edit_profil():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for('login'))
+
+    user = db.session.get(User, user_id)
+    if not user:
+        return redirect(url_for('login'))
+
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "change_username":
+            new_username = request.form.get("username")
+            if new_username:
+                user.username = new_username
+
+        elif action == "change_status":
+            new_status = request.form.get("status")
+            if new_status:
+                user.status = new_status
+
+        elif action == "change_password":
+            new_password = request.form.get("password")
+            if new_password:
+                user.password = generate_password_hash(new_password)
+
+        db.session.commit()
+        return redirect(url_for('userpage'))
+
+    return render_template("edit_profil.html", user=user)
+
 
 @app.route('/friends', methods=["GET", "POST"])
 def add_friends():
@@ -64,7 +94,7 @@ def userpage():
 
     user = db.session.query(User).filter_by(username=username).first()
     if user:
-        return render_template("userpage.html", username=user.username)
+        return render_template("userpage.html", username=user.username, status=user.status)
     else:
         return redirect("/login")
 
